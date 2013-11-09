@@ -11,9 +11,15 @@ APP.debug = True
 import logging
 logging.basicConfig()
 
-from secrets import CALLBACK_URL, CLIENT_ID, CLIENT_SECRET
+# Create your own secrets.py that contains your Coinbase OAuth app credentials
+# https://coinbase.com/oauth/applications
+from secrets import CLIENT_ID, CLIENT_SECRET
 
-coinbase_client = OAuth2WebServerFlow(CLIENT_ID, CLIENT_SECRET, 'all', redirect_uri='http://www.paywithair.com/consumer_auth', auth_uri='https://www.coinbase.com/oauth/authorize', token_uri='https://www.coinbase.com/oauth/token')
+coinbase_client = OAuth2WebServerFlow(CLIENT_ID, CLIENT_SECRET, 'all',
+                                      redirect_uri='http://coinbase-python.herokuapp.com/consumer_auth',
+                                      auth_uri='https://www.coinbase.com/oauth/authorize',
+                                      token_uri='https://www.coinbase.com/oauth/token')
+
 
 @APP.route('/')
 def register_me():
@@ -21,6 +27,7 @@ def register_me():
     auth_url = coinbase_client.step1_get_authorize_url()
 
     return render_template('register.jinja2', auth_url=auth_url)
+
 
 @APP.route('/consumer_auth')
 def receive_token():
@@ -36,4 +43,4 @@ def receive_token():
     return make_response(token.to_json())
 
 if __name__ == '__main__':
-    APP.run(host='0.0.0.0', port=80)
+    APP.run()
