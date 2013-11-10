@@ -17,30 +17,23 @@ from secrets import CLIENT_ID, CLIENT_SECRET
 
 coinbase_client = OAuth2WebServerFlow(CLIENT_ID, CLIENT_SECRET, 'all',
                                       redirect_uri='http://coinbase-python.herokuapp.com/consumer_auth',
-                                      auth_uri='https://www.coinbase.com/oauth/authorize',
-                                      token_uri='https://www.coinbase.com/oauth/token')
+                                      auth_uri='https://coinbase.com/oauth/authorize',
+                                      token_uri='https://coinbase.com/oauth/token')
 
 
 @app.route('/')
 def register_me():
-
     auth_url = coinbase_client.step1_get_authorize_url()
-
     return render_template('register.jinja2', auth_url=auth_url)
 
 
 @app.route('/consumer_auth')
 def receive_token():
-
     oauth_code = request.args['code']
-
     print oauth_code
-
     http = httplib2.Http(ca_certs='/etc/ssl/certs/ca-certificates.crt')
-
     token = coinbase_client.step2_exchange(oauth_code, http=http)
-
-    return make_response(token.to_json())
+    return render_template('response.jinja2', token_response=token.token_response)
 
 if __name__ == '__main__':
     app.run()
