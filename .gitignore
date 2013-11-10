@@ -36,3 +36,7 @@ nosetests.xml
 
 /.idea/
 /coinbase_oauth2/secrets.py
+
+# Git repo for deploying to coinbase-python.herokuapp.com
+/coinbase_oath2/.git
+.gitignore
